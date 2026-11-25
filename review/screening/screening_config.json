@@ -1,0 +1,43 @@
+{
+  "review_title": "In-context forecasting efficiency of TSFMs (SR for ESANN paper)",
+  "exclusion_codes": [
+    {"code": "E1", "short": "publication type", "label": "Publication type (editorial, comment, erratum, front matter, call for papers, dataset-only)"},
+    {"code": "E2", "short": "not time series", "label": "Not about forecasting/filtering/predicting time series or dynamical systems"},
+    {"code": "E3", "short": "population", "label": "No pretrained foundation model and no in-context transformer forecaster"},
+    {"code": "E4", "short": "comparator/analysis", "label": "None of oracle / classical / naive-on-unpredictable / context-length / mechanism analysis"},
+    {"code": "E9", "short": "other", "label": "Other (explained)"}
+  ],
+  "core_criteria": ["pretrained time-series foundation model or in-context transformer forecaster", "forecasting/prediction of time series or dynamical systems"],
+  "personas": {
+    "A": "You are REVIEWER A, a machine-learning researcher specialising in time-series foundation models and in-context learning.",
+    "B": "You are REVIEWER B, a systematic-review methodologist with a background in statistical forecasting and econometrics."
+  },
+  "conflict_policy": "adjudicate",
+  "qc": {
+    "near_miss": {
+      "model": ["foundation model", "in-context", "zero-shot", "chronos", "timesfm", "moirai", "large language model"],
+      "comparator": ["arima", "garch", "random walk", "oracle", "context length", "bayes", "kalman", "naive", "least squares", "baseline"]
+    },
+    "random_exclusion_sample": 100,
+    "random_seed": 2026,
+    "policy": "advance"
+  },
+  "seeds": [
+    {"label": "Butera 2026 arXiv (long context windows)", "doi": "10.48550/arXiv.2606.01999", "pmid": "", "title": "Why Do Time Series Models Need Long Context Windows?"},
+    {"label": "Wu 2025 arXiv (transformers as TSFMs)", "doi": "10.48550/arXiv.2502.03383", "pmid": "", "title": "Transformers and Their Roles as Time Series Foundation Models"},
+    {"label": "Won 2026 arXiv (attenuated in-context identification)", "doi": "10.48550/arXiv.2610.08118", "pmid": "", "title": "Attenuated in-context identification in time-series foundation models"},
+    {"label": "Yang 2026 arXiv (dynamical parameters)", "doi": "10.48550/arXiv.2609.34316", "pmid": "", "title": "Dynamical Parameters: An Interpretability Framework for Time-Series Foundation Models"},
+    {"label": "Zhang & Gilpin 2025 ICLR26 (context parroting)", "doi": "10.48550/arXiv.2505.11349", "pmid": "", "title": "Context parroting: A simple but tough-to-beat baseline for foundation models in scientific machine learning"},
+    {"label": "Akram & Vikalo 2024 TMLR (transformers as implicit state estimators)", "doi": "10.48550/arXiv.2410.16546", "pmid": "", "title": "Can Transformers In-Context Learn Behavior of a Linear Dynamical System?"}
+  ],
+  "languages_allowed": ["English"],
+  "models": {"A": "sonnet", "B": "sonnet", "ADJ": "", "QC": "", "FTA": "sonnet", "FTB": "sonnet", "FTADJ": ""},
+  "model_labels": {
+    "A": "Claude Sonnet 5.5 (claude-sonnet-5-5)", "B": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+    "ADJ": "Claude Opus 5.5 (claude-opus-5-5)", "QC": "Claude Opus 5.5 (claude-opus-5-5)",
+    "FTA": "Claude Sonnet 5.5 (claude-sonnet-5-5)", "FTB": "Claude Sonnet 5.5 (claude-sonnet-5-5)", "FTADJ": "Claude Opus 5.5 (claude-opus-5-5)"
+  },
+  "agent_type": "academic-research-skills:screening-reviewer-agent",
+  "batching": {"max_records": 50, "max_chars": 90000, "wrap": 150},
+  "dedup": {"doi_title_guard": true}
+}
