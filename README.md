@@ -21,6 +21,8 @@ Authors: Nafis Naufal Rahman and Taqiyudin Miftah Adn (Universitas Brawijaya). T
 - **Hypotheses.** Crossover against the MLE (H1), saturation of the learning-curve slope (H2) and spurious predictability under martingale nulls (H3). They are tested with a joint paired bootstrap (B = 10⁴) and Holm correction.
 - **Exploratory.** Finite-difference Jacobian ("effective filter") analysis.
 
+**Supplementary material for the paper:** `SUPPLEMENT.md` (parameter distributions, model settings, decision rules, sensitivity analyses).
+
 ## Main results (`results/main/`)
 | file | content |
 |---|---|
@@ -31,7 +33,7 @@ Authors: Nafis Naufal Rahman and Taqiyudin Miftah Adn (Universitas Brawijaya). T
 | `../jacobian/` | effective-filter metrics at ε = 1e-3 and 1e-2, plus notes (TiRex excluded as non-smooth, with the reason) |
 
 ## Analysis plan
-`ANALYSIS_PLAN.md` was frozen before any main-run forecast was produced. Deviations D1–D6 are logged in it with dates and reasons. Two were made after inspecting main results: D5 (Toto scored by its median, exploratory) and D6 (bug fix: the Markov-switching AR MLE forecast used a transposed transition matrix and misread the regime means; found by an AI-run integrity check, it had produced a spurious crossover; pre-fix tables are kept in `results/superseded/`).
+`ANALYSIS_PLAN.md` was frozen before any main-run forecast was produced. Deviations D1–D8 are logged in it with dates and reasons. Two were made after inspecting main results: D5 (Toto scored by its median, exploratory) and D6 (bug fix: the Markov-switching AR MLE forecast used a transposed transition matrix and misread the regime means; found by an AI-run integrity check, it had produced a spurious crossover; pre-fix tables are kept in `results/superseded/`).
 
 The plan was written with an AI research assistant and was not registered on a public registry, so we call it a *pre-specified analysis plan*, not a pre-registration. SHA-256 of the frozen version: `dc76521814c3d0847185fc44bbbcedcd746071a0a61cbc9c738d48c3ebc8b57c`. The repository copy includes the later deviation rows.
 
