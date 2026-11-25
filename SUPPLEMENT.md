@@ -42,7 +42,10 @@ No model truncates the context at T ≤ 2048. Contexts shorter than TiRex's trai
 - **H1, per model × family.** Two one-sided paired-bootstrap tests: RE < 1 at the shortest admissible T, and RE > 1 at T = 2048. H1 holds only if both reject after Holm correction over all 2 × 64 tests. T\* is the first T at which RE rises above 1, found by log-linear interpolation of RE in log T. Its interval is the percentile interval over bootstrap replicates that cross.
 - **H2, per model × family.** Ordinary least-squares slope of log ER on log T over T ∈ {256, 512, 1024, 2048}. A one-sided bootstrap test of slope > −0.5, Holm-corrected over 64 tests.
 - **H3, per model on the random walk and white noise at T = 2048.** The primary test is a one-sided paired t-test of the realised squared-error difference against the oracle (null: equal MSE). The benchmark is the oracle, which for the driftless random walk is the no-change forecast. The Wilcoxon signed-rank test is a robustness check. Both are Holm-corrected over 16 tests.
-- **Intervals.** All intervals are pointwise 95% percentile intervals from the joint paired bootstrap (B = 10⁴; series resampled once per replicate and reused at every T and for every method). They are not simultaneous.
+- **Intervals.**
+  - Hypothesis tests, and the intervals reported with them (relative efficiency, T\*, slopes), use the joint paired bootstrap: B = 10⁴, series resampled once per replicate and reused at every T and for every method.
+  - Per-cell intervals in `summary.csv`, also used for the Fig. 1 band, resample series within each cell: B = 10⁴ at h = 1, B = 1000 for h > 1.
+  - All intervals are pointwise 95% percentile intervals, not simultaneous.
 
 ## S4. H2 cells not supported (16 of 64)
 | Family | Model(s) | Reason |
@@ -54,7 +57,7 @@ No model truncates the context at T ≤ 2048. Contexts shorter than TiRex's trai
 | Random walk | TimesFM-3 | slope −0.47 |
 | AR(1), AR(3), local level, MS-AR, random walk | Toto (sample mean) | intervals too wide (sample-mean outliers; deviation D5) |
 
-Slope intervals for all cells are in `results/main/H2.csv`. For the seven non-Toto models the median interval width is 0.08 and the maximum is 0.20. The MLE slopes lie between −1.10 and −0.97, and every MLE interval lies within [−1.24, −0.88].
+Slope intervals for all cells are in `results/main/H2.csv`. For the seven non-Toto models the median interval width is 0.08 and the maximum is 0.20. The MLE slopes lie between −1.10 and −0.97, and every MLE interval lies within [−1.25, −0.88].
 
 ## S5. MS-AR sensitivity with a fallback for failed fits (deviation D7; `results/main/msar_fallback_D7.csv`)
 When the MS-AR MLE fails (125, 19 and 1 of 2000 series at T = 16, 32 and 64), it is replaced by the single-regime AR(1) least-squares fit. All 2000 series are then kept. At T = 16, RE ranges from 1.39 [1.17, 1.68] for TimesFM-2.5 to 2.04 [1.73, 2.42] for TiRex across the seven non-Toto models; Toto is 3.76 [2.09, 6.14]. Every interval lies above 1, and likewise at T = 32 and 64. The confirmatory H1 conclusion is unchanged.
