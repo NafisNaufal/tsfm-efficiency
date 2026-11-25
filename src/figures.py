@@ -34,9 +34,9 @@ def _style(ax):
     ax.set_xscale("log", base=2); ax.set_xticks([16, 64, 256, 1024]); ax.set_xticklabels(["16", "64", "256", "1024"])
 
 
-def fig_learning_curves(S, fams, fname, floor=5e-4):
-    """Excess risk over the Bayes predictor vs context length (h=1), log-log; values below `floor` drawn at floor (hollow)."""
-    fig, axes = plt.subplots(1, len(fams), figsize=(4.85, 2.15), sharey=True)
+def fig_learning_curves(S, fams, fname, floor=1e-4):
+    """Excess risk over the Bayes predictor vs context length (h=1), log-log; values below `floor` are clipped to it (none in the main data)."""
+    fig, axes = plt.subplots(1, len(fams), figsize=(4.85, 1.8), sharey=True)
     for ax, fam in zip(np.atleast_1d(axes), fams):
         d = S[(S.family == fam) & (S.h == 1)]
         for m in ["mle"] + PLOT_MODELS:
@@ -52,7 +52,7 @@ def fig_learning_curves(S, fams, fname, floor=5e-4):
         ax.set_yscale("log"); _style(ax); ax.set_title(FAMNAME[fam], color=INK); ax.set_xlabel("context length $T$")
     np.atleast_1d(axes)[0].set_ylabel("excess risk $\\mathrm{ER}$ (h=1)")
     h, l = np.atleast_1d(axes)[0].get_legend_handles_labels()
-    fig.tight_layout(pad=0.3, w_pad=0.6); fig.subplots_adjust(top=0.70)
+    fig.tight_layout(pad=0.3, w_pad=0.6); fig.subplots_adjust(top=0.68)
     fig.legend(h, l, ncol=5, loc="upper center", bbox_to_anchor=(0.5, 1.0), frameon=False, handlelength=1.8, columnspacing=1.0)
     fig.savefig(f"{OUT}/{fname}.pdf", bbox_inches="tight"); plt.close(fig)
 
@@ -78,7 +78,7 @@ def fig_filters(fname="fig_filter"):
     phi = np.array([p["phi"][0] for p in prm]); bins = np.linspace(-1, 1, 9); mid = (bins[:-1] + bins[1:]) / 2
     F = pd.read_csv(f"{ROOT}/results/jacobian/filters_eps0.001.csv"); F = F[F.method != "tirex"]
     show = ["chronos-bolt-base", "chronos-2", "timesfm-2.5", "moirai-2-small"]
-    fig, axes = plt.subplots(1, 3, figsize=(4.85, 1.75), gridspec_kw=dict(width_ratios=[1.15, 1, 1]))
+    fig, axes = plt.subplots(1, 3, figsize=(4.85, 1.5), gridspec_kw=dict(width_ratios=[1.15, 1, 1]))
     ax = axes[0]; ax.plot([-1, 1], [-1, 1], color=MUTED, lw=0.6, ls=":")
     for m in ["mle"] + show:
         w = np.load(f"{J}/ar1/T1024/J_{m}.npy")[:, 0]; idx = np.digitize(phi, bins) - 1
@@ -97,16 +97,16 @@ def fig_filters(fname="fig_filter"):
         ax.set_xscale("log", base=2); ax.set_xticks([64, 256, 1024]); ax.set_xticklabels(["64", "256", "1024"])
         ax.set_ylim(0, 1.25); ax.grid(True, color=GRID, lw=0.5); ax.set_axisbelow(True); ax.set_title(ttl, color=INK)
         ax.set_xlabel("context length $T$")
-    axes[1].set_ylabel("distance to Bayes filter")
+    axes[1].set_ylabel("dist. to Bayes filter")
     h, l = axes[1].get_legend_handles_labels()
-    fig.tight_layout(pad=0.3, w_pad=1.0); fig.subplots_adjust(top=0.70)
+    fig.tight_layout(pad=0.3, w_pad=1.0); fig.subplots_adjust(top=0.62)
     fig.legend(h, l, ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.0), frameon=False, handlelength=1.8, columnspacing=1.0)
     fig.savefig(f"{OUT}/{fname}.pdf", bbox_inches="tight"); plt.close(fig)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--tag", default="main")
-    ap.add_argument("--fams", nargs="*", default=["ar3", "arma11", "local_level", "random_walk"])
+    ap.add_argument("--fams", nargs="*", default=["ar3", "msar", "random_walk", "white_noise"])
     a = ap.parse_args(); os.makedirs(OUT, exist_ok=True)
     S = pd.read_csv(f"{ROOT}/results/{a.tag}/summary.csv"); R = pd.read_csv(f"{ROOT}/results/{a.tag}/re.csv")
     fig_learning_curves(S, a.fams, f"fig_er_{a.tag}"); fig_relative_efficiency(R, a.fams, f"fig_re_{a.tag}")

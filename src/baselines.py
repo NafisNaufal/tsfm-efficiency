@@ -46,17 +46,28 @@ def _mle(family, ctx, H, prm):
     if family == "white_noise":   # correctly specified up to an unknown mean
         return np.full(H, ctx.mean()), np.full(H, ctx.std(ddof=1))
     if family == "msar":
+        # statsmodels MarkovAutoregression (mean form): y_t - mu_{s_t} = phi_{s_t} (y_{t-1} - mu_{s_{t-1}}) + sigma_{s_t} e_t,
+        # regime_transition[i, j] = P(s_t = i | s_{t-1} = j) (columns sum to 1).  Deviation D6 (2026-11-25): the earlier
+        # code used the transpose and treated mu as an intercept; fixed after the Stage 2.5 integrity check.
         from statsmodels.tsa.regime_switching.markov_autoregression import MarkovAutoregression
         r = MarkovAutoregression(ctx, k_regimes=2, order=1, switching_ar=True, switching_variance=True).fit(disp=False, maxiter=200)
-        P = r.regime_transition[:, :, -1].T if r.regime_transition.ndim == 3 else r.regime_transition.T
-        xi = np.asarray(r.filtered_marginal_probabilities)[-1]
+        P = r.regime_transition[:, :, -1]                       # P[i, j] = P(i | j)
+        xi = np.asarray(r.filtered_marginal_probabilities)[-1]  # P(s_T = j | data)
         par = r.params; names = r.model.param_names
-        c = [par[names.index(f"const[{k}]")] for k in range(2)]; ph = [par[names.index(f"ar.L1[{k}]")] for k in range(2)]
-        mean, x = [], ctx[-1]; pr = xi
-        for _ in range(H):   # exact one-step mean, plug-in recursion beyond (documented approximation)
-            pr = P @ pr if P.shape == (2, 2) else pr
-            m = sum(pr[k] * (c[k] + ph[k] * x) for k in range(2)); mean.append(m); x = m
-        return np.array(mean), None
+        mu = np.array([par[names.index(f"const[{k}]")] for k in range(2)])
+        ph = np.array([par[names.index(f"ar.L1[{k}]")] for k in range(2)])
+        sg = np.sqrt([par[names.index(f"sigma2[{k}]")] for k in range(2)])
+        # exact one-step mean: sum_{j,k} P(s_T=j|data) P(k|j) [mu_k + phi_k (y_T - mu_j)]
+        m1 = sum(xi[j] * P[k, j] * (mu[k] + ph[k] * (ctx[-1] - mu[j])) for j in range(2) for k in range(2))
+        # h > 1: Monte Carlo from the fitted model (4000 paths, fixed seed)
+        rng = np.random.default_rng(12345); K = 4000
+        s_prev = (rng.random(K) > xi[0]).astype(int); y_prev = np.full(K, ctx[-1]); out = np.zeros((K, H))
+        for h in range(H):
+            s_new = (rng.random(K) > P[0, s_prev]).astype(int)
+            y_new = mu[s_new] + ph[s_new] * (y_prev - mu[s_prev]) + sg[s_new] * rng.standard_normal(K)
+            out[:, h] = y_new; s_prev, y_prev = s_new, y_new
+        mean = out.mean(0); mean[0] = m1
+        return mean, out.std(0)
     if family in ("garch", "garch_t"):
         from arch import arch_model
         r = arch_model(ctx * 10, mean="Zero", vol="GARCH", p=1, q=1, dist="normal").fit(disp="off")

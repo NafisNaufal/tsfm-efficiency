@@ -31,7 +31,7 @@ Authors: Nafis Naufal Rahman and Taqiyudin Miftah Adn (Universitas Brawijaya). T
 | `../jacobian/` | effective-filter metrics at ε = 1e-3 and 1e-2, plus notes (TiRex excluded as non-smooth, with the reason) |
 
 ## Analysis plan
-`ANALYSIS_PLAN.md` was frozen before any main-run forecast was produced. Deviations D1–D5 are logged in it with dates and reasons; D5 was made after inspecting main results and is labelled exploratory.
+`ANALYSIS_PLAN.md` was frozen before any main-run forecast was produced. Deviations D1–D6 are logged in it with dates and reasons. Two were made after inspecting main results: D5 (Toto scored by its median, exploratory) and D6 (bug fix: the Markov-switching AR MLE forecast used a transposed transition matrix and misread the regime means; found by an AI-run integrity check, it had produced a spurious crossover; pre-fix tables are kept in `results/superseded/`).
 
 The plan was written with an AI research assistant and was not registered on a public registry, so we call it a *pre-specified analysis plan*, not a pre-registration. SHA-256 of the frozen version: `dc76521814c3d0847185fc44bbbcedcd746071a0a61cbc9c738d48c3ebc8b57c`. The repository copy includes the later deviation rows.
 
@@ -52,6 +52,8 @@ python src/analyze.py    --tag main --B 10000
 python src/hypotheses.py --tag main --B 10000
 python src/jacobian.py build|cpu|tsfm|analyze --eps 1e-3        # exploratory filter analysis
 python src/figures.py    --tag main
+python src/table.py > table1.tex                               # Table 1 of the paper
+python src/pilot_check.py                                     # estimator-agreement numbers (deviation D3)
 ```
 
 Raw forecasts (about 2.8 GB) are not included; the commands above regenerate them.
