@@ -86,3 +86,20 @@ Under Student-t innovations the Gaussian GARCH MLE's intervals are themselves mi
 
 ## S8. Local linearity of the effective filters (review item S18)
 The local linear approximation explains most of the forecast variation under random perturbations of the last 32 context values. Across the analysed models, families and T, the median R² ranges from 0.65 to 0.98. TiRex is the exception: its R² is negative in every cell, so no TiRex filter is reported. See `results/jacobian/filters_eps0.001.csv`, column `r2_med`.
+
+## S9. Literature search (systematic review)
+- **Databases:** arXiv, OpenAlex and Semantic Scholar, searched on 23 Nov. 2026; scripts are in `review/scripts/`.
+- **Records:** 918 after de-duplication.
+- **Screening:** two blinded AI reviewer agents screened titles and abstracts, then full texts, with AI adjudication of conflicts. Full-text agreement: κ = 0.906, PABAK = 0.92.
+- **Full texts:** 112 of 361 were not retrievable, which is a limitation. 249 full texts were assessed and 174 included.
+- **Decision log:** `review/screening/decision_log.csv` (metadata and decisions only).
+- **Scope of the novelty claim:** it is limited to the retrieved corpus.
+
+## S10. Random-walk growth test and the H3 comparator (deviation D9)
+- **Growth test:** a one-sided joint-bootstrap test of slope > 0 (T ∈ [256, 2048]), Holm-corrected over the 8 pre-specified models (`results/main/rw_growth_holm.csv`).
+  - Supported (Holm p = 0.0008): Chronos-Bolt-S, Chronos-Bolt-B, Chronos-2, TiRex, Moirai-2.0-S.
+  - Not supported: TimesFM-2.5, TimesFM-3, Toto.
+- **Comparator:** against the correctly specified MLE at T = 2048 (H1's pre-specified test of RE > 1, Holm over all H1 tests), every model is less efficient.
+  - Random walk: RE 21–1206.
+  - White noise: RE 1.5–444.
+  - All Holm p ≤ 0.013 (the bootstrap floor).
