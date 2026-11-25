@@ -26,9 +26,8 @@ for fam in ["garch", "garch_t"]:
     e = {m: d.loc[m, "width_logerr"] for m in P}; b, w = min(e, key=e.get), max(e, key=e.get)
     print(f"{NAME[fam]}$^\\dagger$ & -- & {d.loc['mle','width_logerr']:.4f} & {e[b]:.4f} ({AB[b]}) & -- & -- \\\\")
 print(r"\hline\end{tabular}")
-print(r"\caption{Excess risk (ER, $h{=}1$) over the oracle predictor. Slopes: $\log\mathrm{ER}$ vs.\ $\log T$ on $T\in[256,2048]$ "
-      r"(TSFMs: median over 8 models). RE$_{\min}$: smallest ER$_{\rm TSFM}$/ER$_{\rm MLE}$ at the shortest admissible context "
-      r"($T_{\rm low}{=}16$; 32 for seasonal AR), with the lower 95\% bound in brackets. Toto enters with its pre-specified sample-mean forecast (its RE$_{\min}$ ranges from 3.40 to 119.6; Suppl.\ S7). "
-      r"$^\dagger$GARCH rows: mean squared log ratio of each method's own 80\% interval width to the oracle's (conditional mean is 0). "
-      r"Bolt = Chronos-Bolt, Chr = Chronos, TFM = TimesFM. All intervals in the repository.}\label{tab:main}")
+print(r"\caption{Excess risk (ER, $h{=}1$) over the oracle predictor. Slopes: $\log\mathrm{ER}$ vs.\ $\log T$, $T\in[256,2048]$ (TSFMs: median of 8). "
+      r"RE$_{\min}$: smallest ER$_{\rm TSFM}$/ER$_{\rm MLE}$ at the shortest admissible $T$ (16; 32 for seasonal AR), lower 95\% bound in brackets; "
+      r"Toto uses its pre-specified sample mean (RE$_{\min}$ 3.40--119.6, Suppl.\ S7). $^\dagger$Mean squared log ratio of each method's 80\% interval width to the oracle's. "
+      r"Bolt = Chronos-Bolt, Chr = Chronos, TFM = TimesFM.}\label{tab:main}")
 print(r"\end{table}")

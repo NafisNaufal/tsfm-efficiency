@@ -39,6 +39,8 @@ def _oracle_one(args):
     fam, ctx, prm, seed = args
     rng = np.random.default_rng(seed)
     mean = oracle_point(fam, ctx, prm, H, rng=rng, k=2000)
+    if fam == "msar":   # deviation D10: exact Hamilton one-step mean at h=1 (Monte Carlo only for h>1)
+        mean = np.array(mean, dtype=float); mean[0] = oracle_point(fam, ctx, prm, 1)[0]
     s = oracle_sampler(fam, ctx, prm, H, 4000, rng)
     return mean, np.quantile(s, QL, axis=0).T, s.std(0)
 
